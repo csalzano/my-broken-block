@@ -31,7 +31,7 @@ function register_meta_field_for_post()
 	//The meta key the block saves
 	register_post_meta( 'post', 'block_meta_key', array(
 		'sanitize_callback' => 'sanitize_text_field',
-		'show_in_rest'      => false,
+		'show_in_rest'      => true,
 		'single'            => true,
 		'type'              => 'string',
 	) );
