@@ -20,40 +20,42 @@ function myguten_enqueue()
 		$asset_file['version']
 	);
 
-    register_block_type( 'myguten/test-block', array(
-        'editor_script' => 'myguten-script',
-    ) );
+	register_block_type( 'myguten/test-block', array(
+		'editor_script' => 'myguten-script',
+	) );
 }
 add_action( 'enqueue_block_editor_assets', 'myguten_enqueue' );
 
 function register_meta_field_for_post()
 {
 	//The meta key the block saves
-	register_meta( 'post', 'block_meta_key', array(
-		'sanitize_callback' => 'maybe_unserialize',
-		'show_in_rest'      => true,
+	register_post_meta( 'post', 'block_meta_key', array(
+		'sanitize_callback' => 'sanitize_text_field',
+		'show_in_rest'      => false,
 		'single'            => true,
 		'type'              => 'string',
 	) );
 
 	/**
 	 * This is another registered meta field that we won't use explicitly, but
-	 * will be saved with a blank value any time our broken block is used.
+	 * will be saved with a blank value any time our broken block is used. This
+	 * was not expected behavior--a block should only save the field we tell it.
 	 */
-	register_meta( 'post', 'another_meta_key_1', array(
+	register_post_meta( 'post', 'another_meta_key_1', array(
 		'sanitize_callback' => 'sanitize_text_field',
-		'show_in_rest'      => true,
+		'show_in_rest'      => true, //toggle this to false to prevent the block from saving a blank value for this key
 		'single'            => true,
 		'type'              => 'string',
 	) );
 
 	/**
 	 * This is another registered meta field that we won't use explicitly, but
-	 * will be saved with a blank value any time our broken block is used.
+	 * will be saved with a blank value any time our broken block is used. This
+	 * was not expected behavior--a block should only save the field we tell it.
 	 */
-	register_meta( 'post', 'another_meta_key_2', array(
+	register_post_meta( 'post', 'another_meta_key_2', array(
 		'sanitize_callback' => 'sanitize_text_field',
-		'show_in_rest'      => true,
+		'show_in_rest'      => true, //toggle this to false to prevent the block from saving a blank value for this key
 		'single'            => true,
 		'type'              => 'string',
 	) );
