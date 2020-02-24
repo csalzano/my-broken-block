@@ -2,7 +2,7 @@
 /**
  * Plugin Name: My Broken Block
  * Description: My first attempt to create a block that updates a post meta value using the Developer Handbook.
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Corey Salzano
  * Author URI: https://profiles.wordpress.org/salzano
  * License: GPLv2 or later
@@ -61,3 +61,38 @@ function register_meta_field_for_post()
 	) );
 }
 add_action( 'init', 'register_meta_field_for_post' );
+
+/**
+ * Don't insert empty meta values. When the block editor updates a meta value,
+ * it also inserts blanks for every other key registered on the post type.
+ */
+function catch_blank_meta_adds( $do_insert, $object_id, $meta_key, $meta_value, $is_unique )
+{
+	$our_keys = array(
+		'block_meta_key',
+		'another_meta_key_1',
+		'another_meta_key_2',
+	);
+
+	if( ! in_array( $meta_key, $our_keys ) )
+	{
+		return false;
+	}
+
+	//Don't insert empty meta values
+	if( empty( $_meta_value ) )
+	{
+		return false;
+	}
+
+	return $do_insert;
+}
+/**
+ * Comment the following line to insert blank meta values for all other keys
+ * on the post type when our block that modifies just one meta value is saved.
+ * With this filter in place, the block works to save the meta key we are most
+ * interested in, `block_meta_key`, but users will be shown an error in the
+ * editor: "Updating failed. Error message: Could not update the meta value of
+ * another_meta_key_1 in database."
+ */
+add_filter( 'add_post_metadata', 'catch_blank_meta_adds', 10, 5 );
